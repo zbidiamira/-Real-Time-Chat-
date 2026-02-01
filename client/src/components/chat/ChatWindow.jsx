@@ -17,12 +17,15 @@ import './ChatWindow.css';
 
 /**
  * ChatWindow component displays the main chat area with messages
+ * @param {Object} props - Component props
+ * @param {Function} props.onMenuClick - Callback for mobile menu button
+ * @param {boolean} props.isMobile - Whether the view is mobile
  */
-const ChatWindow = () => {
+const ChatWindow = ({ onMenuClick, isMobile }) => {
   const { selectedChat, getChatName, getChatAvatar, updateChatLatestMessage, getChatPartner } = useChat();
   const { joinChat, leaveChat, sendMessage: emitMessage, emitTyping, emitStopTyping, on, off, isUserOnline } = useSocket();
   const { showToast } = useToast();
-  const { notifyNewMessage, clearUnread } = useNotification();
+  const { clearUnread } = useNotification();
   
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -44,15 +47,18 @@ const ChatWindow = () => {
     setLoading(true);
     try {
       const response = await messageService.getMessages(chatId, pageNum);
-      const newMessages = response.data?.messages || [];
+      // Response structure: { success, message, data: [...messages], pagination }
+      // Messages are already in chronological order from server
+      const newMessages = response.data || [];
       
       if (append) {
-        setMessages((prev) => [...newMessages.reverse(), ...prev]);
+        // For loading older messages, prepend to existing
+        setMessages((prev) => [...newMessages, ...prev]);
       } else {
-        setMessages(newMessages.reverse());
+        setMessages(newMessages);
       }
       
-      setHasMore(newMessages.length === 50);
+      setHasMore(response.pagination?.hasMore || newMessages.length === 50);
       setPage(pageNum);
     } catch (err) {
       console.error('Failed to fetch messages:', err);
@@ -103,26 +109,27 @@ const ChatWindow = () => {
   }, [selectedChatId]);
 
   /**
-   * Handle socket events for messages
+   * Handle socket events for messages in active chat
    */
   useEffect(() => {
     if (!selectedChatId) return;
 
-    // New message received
+    // New message received - only handle adding to active chat
     const handleNewMessage = (message) => {
       // Only add if message is for current chat
       const chatId = message.chat?._id || message.chat;
       const isActiveChat = chatId === selectedChatId;
       
       if (isActiveChat) {
-        setMessages((prev) => [...prev, message]);
+        // Add message to current chat's messages
+        setMessages((prev) => {
+          // Avoid duplicates by checking message ID
+          const exists = prev.some(m => m._id === message._id);
+          if (exists) return prev;
+          return [...prev, message];
+        });
       }
-      
-      // Update latest message in chat list
-      updateChatLatestMessage(message);
-      
-      // Notify for new message (handles unread count, sound, browser notification)
-      notifyNewMessage(message, chatId, isActiveChat);
+      // Note: notifications are now handled by useGlobalNotifications hook
     };
 
     // Typing events
@@ -158,17 +165,30 @@ const ChatWindow = () => {
   }, [selectedChatId]);
 
   /**
-   * Send a message
+   * Send a message with optional attachments
+   * @param {string} content - Message text content
+   * @param {Array} attachments - Optional array of attachment objects
    */
-  const handleSend = async (content) => {
-    if (!selectedChat || !content.trim() || sending) return;
+  const handleSend = async (content, attachments = []) => {
+    if (!selectedChat || sending) return;
+    
+    // Require either content or attachments
+    const trimmedContent = content?.trim();
+    if (!trimmedContent && (!attachments || attachments.length === 0)) return;
 
     setSending(true);
     try {
-      const response = await messageService.sendMessage({
+      const messageData = {
         chatId: selectedChat._id,
-        content: content.trim()
-      });
+        content: trimmedContent || 'Shared media'
+      };
+      
+      // Add attachments if present
+      if (attachments && attachments.length > 0) {
+        messageData.attachments = attachments;
+      }
+      
+      const response = await messageService.sendMessage(messageData);
 
       const newMessage = response.data?.message;
       if (newMessage) {
@@ -206,6 +226,20 @@ const ChatWindow = () => {
   if (!selectedChat) {
     return (
       <div className="chat-window chat-window-empty">
+        {/* Mobile menu button */}
+        {isMobile && (
+          <button 
+            className="mobile-menu-toggle"
+            onClick={onMenuClick}
+            aria-label="Open menu"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
+        )}
         <div className="empty-state">
           <div className="empty-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -228,6 +262,20 @@ const ChatWindow = () => {
     <div className="chat-window">
       {/* Chat Header */}
       <div className="chat-header">
+        {/* Mobile menu button */}
+        {isMobile && (
+          <button 
+            className="mobile-menu-toggle"
+            onClick={onMenuClick}
+            aria-label="Open menu"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
+        )}
         <div className="chat-header-info">
           <div className="chat-header-avatar">
             <img 

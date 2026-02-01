@@ -1,9 +1,10 @@
 /**
  * MessageBubble Component
- * Individual message bubble with sender info
+ * Individual message bubble with sender info and media support
  */
 
 import Avatar from '../common/Avatar';
+import MediaMessage from './MediaMessage';
 import { formatTime } from '../../utils/dateUtils';
 import './MessageBubble.css';
 
@@ -15,7 +16,13 @@ import './MessageBubble.css';
  * @param {boolean} props.showSender - Show sender name (for groups)
  */
 const MessageBubble = ({ message, isOwn, showSender = false }) => {
-  const { content, sender, createdAt, type = 'text' } = message;
+  const { content, sender, createdAt, attachments } = message;
+  
+  // Check if message has attachments
+  const hasAttachments = attachments && attachments.length > 0;
+  
+  // Show text content unless it's only "Shared media" placeholder with attachments
+  const hasTextContent = content && !(content === 'Shared media' && hasAttachments);
 
   return (
     <div className={`message-bubble-wrapper ${isOwn ? 'message-own' : 'message-other'}`}>
@@ -36,31 +43,18 @@ const MessageBubble = ({ message, isOwn, showSender = false }) => {
         )}
 
         {/* Message bubble */}
-        <div className={`message-bubble ${isOwn ? 'bubble-own' : 'bubble-other'}`}>
-          {type === 'text' && (
-            <p className="message-text">{content}</p>
-          )}
-          
-          {type === 'image' && message.attachments?.[0] && (
-            <img 
-              src={message.attachments[0].url} 
-              alt="Shared image"
-              className="message-image"
+        <div className={`message-bubble ${isOwn ? 'bubble-own' : 'bubble-other'} ${hasAttachments ? 'has-attachments' : ''}`}>
+          {/* Media attachments */}
+          {hasAttachments && (
+            <MediaMessage 
+              attachments={attachments} 
+              isSent={isOwn}
             />
           )}
-
-          {type === 'file' && message.attachments?.[0] && (
-            <a 
-              href={message.attachments[0].url}
-              download={message.attachments[0].name}
-              className="message-file"
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                <polyline points="14 2 14 8 20 8" />
-              </svg>
-              <span>{message.attachments[0].name}</span>
-            </a>
+          
+          {/* Text content */}
+          {hasTextContent && (
+            <p className="message-text">{content}</p>
           )}
 
           <span className="message-time">{formatTime(createdAt)}</span>

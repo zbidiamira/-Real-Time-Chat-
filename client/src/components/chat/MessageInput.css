@@ -118,3 +118,64 @@
   width: 20px;
   height: 20px;
 }
+
+/* Media Upload Container */
+.message-input-container {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+}
+
+.message-input-container .message-input-form {
+  border-top: none;
+}
+
+.media-upload-container {
+  padding: 0 var(--spacing-md);
+  padding-top: var(--spacing-sm);
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* Upload Progress */
+.upload-progress {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-primary-light);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-sm);
+}
+
+.upload-progress-bar {
+  flex: 1;
+  height: 4px;
+  background: var(--color-border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.upload-progress-fill {
+  height: 100%;
+  background: var(--color-primary);
+  border-radius: 2px;
+  transition: width 0.2s ease;
+}
+
+.upload-progress-text {
+  font-size: var(--font-xs);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+/* Hidden file input */
+.hidden-file-input {
+  display: none;
+}
+
+/* Active state for attach button */
+.input-action-btn.active {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}

@@ -4,6 +4,14 @@
  */
 
 /* ==========================================
+   Import Additional Stylesheets (must be first)
+   ========================================== */
+
+@import './animations.css';
+@import './responsive.css';
+@import './accessibility.css';
+
+/* ==========================================
    CSS Variables (Design Tokens)
    ========================================== */
 
@@ -155,6 +163,17 @@
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.4);
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 10px 10px -5px rgba(0, 0, 0, 0.5);
+}
+
+/* Theme Transition */
+.theme-transitioning,
+.theme-transitioning *,
+.theme-transitioning *::before,
+.theme-transitioning *::after {
+  transition: background-color 0.3s ease, 
+              border-color 0.3s ease, 
+              color 0.3s ease,
+              box-shadow 0.3s ease !important;
 }
 
 /* ==========================================

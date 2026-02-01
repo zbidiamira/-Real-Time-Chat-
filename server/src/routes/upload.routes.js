@@ -4,9 +4,9 @@
  */
 
 import { Router } from 'express';
-import { uploadUserAvatar, deleteUserAvatar } from '../controllers/upload.controller.js';
+import { uploadUserAvatar, deleteUserAvatar, uploadChatMedia } from '../controllers/upload.controller.js';
 import { protect } from '../middleware/auth.middleware.js';
-import { uploadAvatar, handleUploadError } from '../middleware/upload.middleware.js';
+import { uploadAvatar, uploadMedia, handleUploadError } from '../middleware/upload.middleware.js';
 
 const router = Router();
 
@@ -27,5 +27,13 @@ router.post('/avatar', uploadAvatar, handleUploadError, uploadUserAvatar);
  * @access  Private
  */
 router.delete('/avatar', deleteUserAvatar);
+
+/**
+ * @route   POST /api/upload/media
+ * @desc    Upload media files for chat messages
+ * @access  Private
+ * @body    FormData with 'media' field containing up to 5 files
+ */
+router.post('/media', uploadMedia, handleUploadError, uploadChatMedia);
 
 export default router;

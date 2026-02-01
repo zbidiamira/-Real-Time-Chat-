@@ -15,6 +15,16 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 /**
+ * Get file type based on mimetype
+ * @param {string} mimetype - File mimetype
+ * @returns {string} 'image' or 'file'
+ */
+const getFileType = (mimetype) => {
+  const imageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+  return imageTypes.includes(mimetype) ? 'image' : 'file';
+};
+
+/**
  * @desc    Upload avatar image
  * @route   POST /api/upload/avatar
  * @access  Private
@@ -81,4 +91,26 @@ export const deleteUserAvatar = asyncHandler(async (req, res) => {
   }
 
   sendSuccess(res, 200, 'Avatar removed successfully', { user: updatedUser });
+});
+
+/**
+ * @desc    Upload media files for chat messages
+ * @route   POST /api/upload/media
+ * @access  Private
+ */
+export const uploadChatMedia = asyncHandler(async (req, res) => {
+  if (!req.files || req.files.length === 0) {
+    throw AppError.badRequest('Please upload at least one file');
+  }
+
+  // Process uploaded files
+  const attachments = req.files.map(file => ({
+    url: `/uploads/media/${file.filename}`,
+    type: getFileType(file.mimetype),
+    name: file.originalname,
+    size: file.size,
+    mimetype: file.mimetype
+  }));
+
+  sendSuccess(res, 200, 'Files uploaded successfully', { attachments });
 });

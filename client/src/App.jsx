@@ -9,6 +9,7 @@ import { ChatProvider } from './context/ChatContext';
 import { ToastProvider } from './context/ToastContext';
 import { SocketProvider } from './context/SocketContext';
 import { NotificationProvider } from './context/NotificationContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { ProtectedRoute } from './components/common';
 import { Login, Register, Chat, NotFound } from './pages';
 
@@ -19,8 +20,9 @@ import { Login, Register, Chat, NotFound } from './pages';
  */
 function App() {
   return (
-    <ToastProvider>
-      <AuthProvider>
+    <ThemeProvider>
+      <ToastProvider>
+        <AuthProvider>
         <ChatProvider>
           <NotificationProvider>
             <SocketProvider>
@@ -50,6 +52,7 @@ function App() {
         </ChatProvider>
       </AuthProvider>
     </ToastProvider>
+    </ThemeProvider>
   );
 }
 

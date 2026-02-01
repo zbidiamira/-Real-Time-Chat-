@@ -12,9 +12,21 @@ import './ChatList.css';
  * ChatList component renders filtered list of chats
  * @param {Object} props - Component props
  * @param {string} props.searchQuery - Search filter
+ * @param {Function} props.onChatSelect - Callback when chat is selected (for mobile)
  */
-const ChatList = ({ searchQuery = '' }) => {
+const ChatList = ({ searchQuery = '', onChatSelect }) => {
   const { chats, selectedChat, selectChat, getChatName } = useChat();
+
+  /**
+   * Handle chat selection
+   */
+  const handleChatClick = (chat) => {
+    selectChat(chat);
+    // Notify parent (for mobile drawer close)
+    if (onChatSelect) {
+      onChatSelect(chat);
+    }
+  };
 
   // Filter chats based on search query
   const filteredChats = useMemo(() => {
@@ -58,7 +70,7 @@ const ChatList = ({ searchQuery = '' }) => {
           key={chat._id}
           chat={chat}
           isSelected={selectedChat?._id === chat._id}
-          onClick={() => selectChat(chat)}
+          onClick={() => handleChatClick(chat)}
         />
       ))}
     </div>

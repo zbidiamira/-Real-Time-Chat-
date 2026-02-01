@@ -1,0 +1,208 @@
+/**
+ * Skeleton Loading Styles
+ * Shimmer animation for loading placeholders
+ */
+
+/* Base skeleton styles */
+.skeleton {
+  background: var(--color-hover);
+  border-radius: var(--radius-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Shimmer animation */
+.skeleton-animated::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.15),
+    transparent
+  );
+  animation: shimmer 1.5s infinite;
+}
+
+.theme-dark .skeleton-animated::after {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.08),
+    transparent
+  );
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Skeleton variants */
+.skeleton-text {
+  height: 1em;
+  border-radius: var(--radius-sm);
+}
+
+.skeleton-circular {
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.skeleton-rectangular {
+  border-radius: var(--radius-md);
+}
+
+/* Skeleton group */
+.skeleton-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+/* ========================================
+   Chat Item Skeleton
+   ======================================== */
+.skeleton-chat-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+}
+
+.skeleton-chat-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+/* ========================================
+   Message Skeleton
+   ======================================== */
+.skeleton-message {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-md);
+  max-width: 70%;
+}
+
+.skeleton-message-own {
+  margin-left: auto;
+  flex-direction: row-reverse;
+}
+
+.skeleton-message-bubble {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm);
+  background: var(--color-hover);
+  border-radius: var(--radius-lg);
+}
+
+.skeleton-message-own .skeleton-message-bubble {
+  background: var(--color-primary-light);
+}
+
+/* ========================================
+   Message List Skeleton
+   ======================================== */
+.skeleton-message-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+}
+
+/* ========================================
+   Chat List Skeleton
+   ======================================== */
+.skeleton-chat-list {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ========================================
+   User Search Skeleton
+   ======================================== */
+.skeleton-user-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.skeleton-user-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.skeleton-user-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+/* ========================================
+   Profile Skeleton
+   ======================================== */
+.skeleton-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+}
+
+/* ========================================
+   Pulse Animation (Alternative)
+   ======================================== */
+.skeleton-pulse {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* ========================================
+   Wave Animation
+   ======================================== */
+.skeleton-wave::after {
+  animation: wave 1.5s ease-in-out infinite;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+}
+
+@keyframes wave {
+  0% {
+    transform: translateX(-100%);
+  }
+  60% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}

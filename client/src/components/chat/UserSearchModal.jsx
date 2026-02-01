@@ -42,7 +42,8 @@ const UserSearchModal = ({ onClose }) => {
     setSearching(true);
     try {
       const response = await userService.searchUsers(query);
-      setUsers(response.data?.users || []);
+      // API returns { success, message, data: [...users], pagination }
+      setUsers(response.data || []);
     } catch (err) {
       console.error('Search failed:', err);
       showToast('error', 'Failed to search users');

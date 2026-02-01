@@ -8,6 +8,7 @@ import ChatList from './ChatList';
 import UserSearchModal from './UserSearchModal';
 import CreateGroupModal from './CreateGroupModal';
 import ProfileModal from './ProfileModal';
+import { ThemeToggle } from '../common';
 import { useAuth } from '../../hooks/useAuth';
 import { useChat } from '../../hooks/useChat';
 import './ChatSidebar.css';
@@ -30,8 +31,10 @@ const getAvatarUrl = (avatar) => {
 
 /**
  * ChatSidebar component displays chat list with search and create options
+ * @param {Object} props - Component props
+ * @param {Function} props.onChatSelect - Callback when a chat is selected (for mobile drawer close)
  */
-const ChatSidebar = () => {
+const ChatSidebar = ({ onChatSelect }) => {
   const { user } = useAuth();
   const { loading } = useChat();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -69,6 +72,7 @@ const ChatSidebar = () => {
             <span className="user-status">{user?.status || 'Online'}</span>
           </div>
         </div>
+        <ThemeToggle />
       </div>
 
       {/* Search and Actions */}
@@ -121,16 +125,16 @@ const ChatSidebar = () => {
             <span>Loading chats...</span>
           </div>
         ) : (
-          <ChatList searchQuery={searchQuery} />
+          <ChatList searchQuery={searchQuery} onChatSelect={onChatSelect} />
         )}
       </div>
 
       {/* Modals */}
       {isSearchOpen && (
-        <UserSearchModal onClose={() => setIsSearchOpen(false)} />
+        <UserSearchModal onClose={() => setIsSearchOpen(false)} onChatCreated={onChatSelect} />
       )}
       {isGroupModalOpen && (
-        <CreateGroupModal onClose={() => setIsGroupModalOpen(false)} />
+        <CreateGroupModal onClose={() => setIsGroupModalOpen(false)} onChatCreated={onChatSelect} />
       )}
       <ProfileModal 
         isOpen={isProfileOpen} 

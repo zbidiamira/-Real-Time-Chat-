@@ -162,18 +162,20 @@ export const handleLeaveChat = (socket, chatId, user) => {
 };
 
 /**
- * Handle new message
+ * Handle new message broadcast
+ * The message is already created via REST API, this just broadcasts it
  * @param {Object} io - Socket.io server instance
  * @param {Object} socket - Socket instance
- * @param {Object} messageData - Message data
+ * @param {Object} message - Already created message object
  * @param {Object} user - Authenticated user
  */
-export const handleNewMessage = async (io, socket, messageData, user) => {
+export const handleNewMessage = async (io, socket, message, user) => {
   try {
-    const { chatId, content, type = 'text', attachments } = messageData;
+    // Get chat ID from message (could be object or string)
+    const chatId = message.chat?._id || message.chat;
 
-    if (!chatId || !content) {
-      socket.emit('error', { message: 'Chat ID and content are required' });
+    if (!chatId) {
+      socket.emit('error', { message: 'Invalid message data' });
       return;
     }
 
@@ -184,27 +186,8 @@ export const handleNewMessage = async (io, socket, messageData, user) => {
       return;
     }
 
-    // Create the message
-    let message = await Message.create({
-      sender: user._id,
-      chat: chatId,
-      content: content.trim(),
-      type,
-      readBy: [user._id],
-      attachments: attachments || []
-    });
-
-    // Populate message details
-    message = await message.populate('sender', 'name email avatar');
-    message = await message.populate('chat');
-
-    // Update chat's latestMessage
-    await Chat.findByIdAndUpdate(chatId, {
-      latestMessage: message._id
-    });
-
-    // Emit to all users in the chat room
-    io.to(chatId).emit('message_received', message);
+    // Broadcast to all OTHER users in the chat room (sender already has it locally)
+    socket.to(chatId).emit('message_received', message);
 
     // Also emit to chat members who might not be in the room
     const chatMembers = chat.users.map(u => u.toString());
@@ -222,10 +205,10 @@ export const handleNewMessage = async (io, socket, messageData, user) => {
       }
     });
 
-    console.log(`💬 New message in chat ${chatId} from ${user.name}`);
+    console.log(`💬 Message broadcast in chat ${chatId} from ${user.name}`);
   } catch (error) {
     console.error('Error in handleNewMessage:', error);
-    socket.emit('error', { message: 'Failed to send message' });
+    socket.emit('error', { message: 'Failed to broadcast message' });
   }
 };
 

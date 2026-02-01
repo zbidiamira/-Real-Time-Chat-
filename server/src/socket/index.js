@@ -73,12 +73,16 @@ export const initializeSocket = (server) => {
     handleSetup(io, socket, user);
 
     // Join a chat room
-    socket.on('join_chat', (chatId) => {
+    socket.on('join_chat', (data) => {
+      // Support both { chatId } object and plain string
+      const chatId = typeof data === 'string' ? data : data?.chatId;
       handleJoinChat(socket, chatId, user);
     });
 
     // Leave a chat room
-    socket.on('leave_chat', (chatId) => {
+    socket.on('leave_chat', (data) => {
+      // Support both { chatId } object and plain string
+      const chatId = typeof data === 'string' ? data : data?.chatId;
       handleLeaveChat(socket, chatId, user);
     });
 
