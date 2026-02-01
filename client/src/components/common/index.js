@@ -10,6 +10,8 @@ export { default as Modal } from './Modal';
 export { default as ProtectedRoute } from './ProtectedRoute';
 export { default as NotificationBadge } from './NotificationBadge';
 export { default as ThemeToggle } from './ThemeToggle';
+export { default as ErrorBoundary } from './ErrorBoundary';
+export { default as ErrorFallback } from './ErrorFallback';
 export { 
   default as Skeleton,
   ChatItemSkeleton,
