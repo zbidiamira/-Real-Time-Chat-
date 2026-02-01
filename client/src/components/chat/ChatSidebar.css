@@ -25,6 +25,40 @@
   gap: var(--spacing-sm);
 }
 
+.user-avatar-btn {
+  position: relative;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.user-avatar-btn:hover .avatar-edit-icon {
+  opacity: 1;
+}
+
+.avatar-edit-icon {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 20px;
+  height: 20px;
+  background: var(--color-primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  border: 2px solid var(--color-surface);
+}
+
+.avatar-edit-icon svg {
+  width: 10px;
+  height: 10px;
+  color: white;
+}
+
 .user-avatar {
   position: relative;
   width: 48px;

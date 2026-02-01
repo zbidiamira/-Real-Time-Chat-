@@ -8,6 +8,8 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 // Import routes
 import routes from './routes/index.js';
@@ -22,6 +24,9 @@ import { sendSuccess } from './utils/responseHandler.js';
 // Load environment variables
 dotenv.config();
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
 
 // ======================
@@ -29,7 +34,9 @@ const app = express();
 // ======================
 
 // Set security HTTP headers
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: 'cross-origin' }
+}));
 
 // Enable CORS with credentials
 app.use(cors({
@@ -57,6 +64,13 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
+
+// ======================
+// Static Files
+// ======================
+
+// Serve uploaded files
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // ======================
 // Root Route

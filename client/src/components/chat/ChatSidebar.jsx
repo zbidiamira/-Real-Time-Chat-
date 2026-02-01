@@ -7,9 +7,26 @@ import { useState } from 'react';
 import ChatList from './ChatList';
 import UserSearchModal from './UserSearchModal';
 import CreateGroupModal from './CreateGroupModal';
+import ProfileModal from './ProfileModal';
 import { useAuth } from '../../hooks/useAuth';
 import { useChat } from '../../hooks/useChat';
 import './ChatSidebar.css';
+
+// API base URL for avatar display
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
+/**
+ * Get full avatar URL
+ */
+const getAvatarUrl = (avatar) => {
+  if (!avatar || avatar === 'default-avatar.png') {
+    return '/default-avatar.png';
+  }
+  if (avatar.startsWith('http') || avatar.startsWith('/default')) {
+    return avatar;
+  }
+  return `${API_URL}${avatar}`;
+};
 
 /**
  * ChatSidebar component displays chat list with search and create options
@@ -19,6 +36,7 @@ const ChatSidebar = () => {
   const { loading } = useChat();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
   return (
@@ -26,14 +44,26 @@ const ChatSidebar = () => {
       {/* Sidebar Header */}
       <div className="sidebar-header">
         <div className="sidebar-user">
-          <div className="user-avatar">
-            <img 
-              src={user?.avatar || '/default-avatar.png'} 
-              alt={user?.name} 
-              onError={(e) => { e.target.src = '/default-avatar.png'; }}
-            />
-            <span className="online-indicator" />
-          </div>
+          <button 
+            className="user-avatar-btn"
+            onClick={() => setIsProfileOpen(true)}
+            title="Edit Profile"
+          >
+            <div className="user-avatar">
+              <img 
+                src={getAvatarUrl(user?.avatar)} 
+                alt={user?.name} 
+                onError={(e) => { e.target.src = '/default-avatar.png'; }}
+              />
+              <span className="online-indicator" />
+            </div>
+            <div className="avatar-edit-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+              </svg>
+            </div>
+          </button>
           <div className="user-info">
             <h3 className="user-name">{user?.name}</h3>
             <span className="user-status">{user?.status || 'Online'}</span>
@@ -102,6 +132,10 @@ const ChatSidebar = () => {
       {isGroupModalOpen && (
         <CreateGroupModal onClose={() => setIsGroupModalOpen(false)} />
       )}
+      <ProfileModal 
+        isOpen={isProfileOpen} 
+        onClose={() => setIsProfileOpen(false)} 
+      />
     </aside>
   );
 };

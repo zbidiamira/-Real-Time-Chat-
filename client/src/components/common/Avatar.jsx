@@ -5,6 +5,25 @@
 
 import './Avatar.css';
 
+// API base URL for avatar display
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
+/**
+ * Get full avatar URL
+ */
+const getAvatarUrl = (src) => {
+  if (!src || src === 'default-avatar.png') {
+    return null; // Will use initials
+  }
+  if (src.startsWith('http') || src.startsWith('blob:') || src.startsWith('/default')) {
+    return src;
+  }
+  if (src.startsWith('/uploads')) {
+    return `${API_URL}${src}`;
+  }
+  return src;
+};
+
 /**
  * Avatar component
  * @param {Object} props - Component props
@@ -51,11 +70,12 @@ const Avatar = ({
     return colors[Math.abs(hash) % colors.length];
   };
 
-  const isDefaultAvatar = !src || src === 'default-avatar.png';
+  const avatarUrl = getAvatarUrl(src);
+  const showInitials = !avatarUrl;
 
   return (
     <div className={`avatar avatar-${size} ${className}`}>
-      {isDefaultAvatar ? (
+      {showInitials ? (
         <div 
           className="avatar-initials"
           style={{ backgroundColor: getColorFromName(name) }}
@@ -63,7 +83,16 @@ const Avatar = ({
           {getInitials(name)}
         </div>
       ) : (
-        <img src={src} alt={alt} className="avatar-image" />
+        <img 
+          src={avatarUrl} 
+          alt={alt} 
+          className="avatar-image"
+          onError={(e) => {
+            // On error, replace with initials by hiding the image
+            e.target.style.display = 'none';
+            e.target.parentNode.classList.add('avatar-fallback');
+          }}
+        />
       )}
       {typeof online === 'boolean' && (
         <span className={`avatar-status ${online ? 'online' : 'offline'}`} />

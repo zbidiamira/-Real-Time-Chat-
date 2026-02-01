@@ -56,6 +56,32 @@ export const userService = {
   updateProfile: async (profileData) => {
     const response = await api.put('/users/profile', profileData);
     return response.data;
+  },
+
+  /**
+   * Upload user avatar
+   * @param {File} file - Image file to upload
+   * @returns {Promise} API response with avatar URL
+   */
+  uploadAvatar: async (file) => {
+    const formData = new FormData();
+    formData.append('avatar', file);
+    
+    const response = await api.post('/upload/avatar', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    return response.data;
+  },
+
+  /**
+   * Delete user avatar (reset to default)
+   * @returns {Promise} API response
+   */
+  deleteAvatar: async () => {
+    const response = await api.delete('/upload/avatar');
+    return response.data;
   }
 };
 

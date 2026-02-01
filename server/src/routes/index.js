@@ -9,6 +9,7 @@ import authRoutes from './auth.routes.js';
 import userRoutes from './user.routes.js';
 import chatRoutes from './chat.routes.js';
 import messageRoutes from './message.routes.js';
+import uploadRoutes from './upload.routes.js';
 
 const router = express.Router();
 
@@ -30,5 +31,8 @@ router.use('/chats', chatRoutes);
 
 // Message routes
 router.use('/messages', messageRoutes);
+
+// Upload routes
+router.use('/upload', uploadRoutes);
 
 export default router;
