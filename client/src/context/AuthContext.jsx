@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }) => {
 
       try {
         const response = await authService.getMe();
-        setUser(response.data.data.user);
+        setUser(response.data.user);
         setToken(storedToken);
       } catch (err) {
         // Token is invalid or expired
@@ -61,7 +61,7 @@ export const AuthProvider = ({ children }) => {
 
     try {
       const response = await authService.register(userData);
-      const { user: newUser, token: newToken } = response.data.data;
+      const { user: newUser, token: newToken } = response.data;
       
       // Save token to localStorage
       localStorage.setItem('token', newToken);
@@ -70,7 +70,7 @@ export const AuthProvider = ({ children }) => {
       setUser(newUser);
       setToken(newToken);
       
-      return response.data;
+      return response;
     } catch (err) {
       const errorMessage = err.response?.data?.message || 'Registration failed';
       setError(errorMessage);
@@ -91,7 +91,7 @@ export const AuthProvider = ({ children }) => {
 
     try {
       const response = await authService.login(credentials);
-      const { user: loggedInUser, token: newToken } = response.data.data;
+      const { user: loggedInUser, token: newToken } = response.data;
       
       // Save token to localStorage
       localStorage.setItem('token', newToken);
@@ -100,7 +100,7 @@ export const AuthProvider = ({ children }) => {
       setUser(loggedInUser);
       setToken(newToken);
       
-      return response.data;
+      return response;
     } catch (err) {
       const errorMessage = err.response?.data?.message || 'Login failed';
       setError(errorMessage);
