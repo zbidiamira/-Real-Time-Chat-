@@ -3,11 +3,12 @@
  * User registration with name, email, and password
  */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthLayout } from '../components/layout';
 import { Button, Input } from '../components/common';
 import { useAuth } from '../hooks/useAuth';
+import { useToast } from '../context/ToastContext';
 import './Register.css';
 
 /**
@@ -15,7 +16,8 @@ import './Register.css';
  */
 const Register = () => {
   const navigate = useNavigate();
-  const { register, loading, error, clearError } = useAuth();
+  const { register, loading, error, clearError, isAuthenticated } = useAuth();
+  const toast = useToast();
   
   // Form state
   const [formData, setFormData] = useState({
@@ -25,6 +27,13 @@ const Register = () => {
     confirmPassword: ''
   });
   const [formErrors, setFormErrors] = useState({});
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/', { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   /**
    * Handle input change
@@ -100,10 +109,14 @@ const Register = () => {
         password: formData.password
       });
       
+      // Show success toast
+      toast.success('Account created successfully! Welcome to ChatApp.');
+      
       // Redirect to home on success
       navigate('/', { replace: true });
     } catch (err) {
-      // Error is handled by AuthContext
+      // Show error toast
+      toast.error(err.response?.data?.message || 'Registration failed. Please try again.');
       console.error('Registration error:', err);
     }
   };

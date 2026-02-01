@@ -3,11 +3,12 @@
  * User login with email and password
  */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AuthLayout } from '../components/layout';
 import { Button, Input } from '../components/common';
 import { useAuth } from '../hooks/useAuth';
+import { useToast } from '../context/ToastContext';
 import './Login.css';
 
 /**
@@ -16,7 +17,8 @@ import './Login.css';
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, loading, error, clearError } = useAuth();
+  const { login, loading, error, clearError, isAuthenticated } = useAuth();
+  const toast = useToast();
   
   // Form state
   const [formData, setFormData] = useState({
@@ -27,6 +29,13 @@ const Login = () => {
 
   // Get redirect path from location state
   const from = location.state?.from?.pathname || '/';
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/', { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   /**
    * Handle input change
@@ -85,10 +94,14 @@ const Login = () => {
         password: formData.password
       });
       
+      // Show success toast
+      toast.success('Welcome back! Login successful.');
+      
       // Redirect to previous page or home
       navigate(from, { replace: true });
     } catch (err) {
-      // Error is handled by AuthContext
+      // Show error toast
+      toast.error(err.response?.data?.message || 'Login failed. Please try again.');
       console.error('Login error:', err);
     }
   };

@@ -3,4 +3,5 @@
  * Export all custom hooks
  */
 
-export { default as useAuth, useAuth as default } from './useAuth';
+export { default as useAuth, useAuth } from './useAuth';
+export { useToast } from './useToast';

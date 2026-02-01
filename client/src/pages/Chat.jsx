@@ -3,7 +3,9 @@
  * Main chat interface (placeholder for PR #8)
  */
 
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { useToast } from '../context/ToastContext';
 import { MainLayout } from '../components/layout';
 import { Header } from '../components/layout';
 import './Chat.css';
@@ -12,7 +14,9 @@ import './Chat.css';
  * Chat page component - Main authenticated view
  */
 const Chat = () => {
+  const navigate = useNavigate();
   const { user, logout } = useAuth();
+  const toast = useToast();
 
   /**
    * Handle logout
@@ -20,7 +24,10 @@ const Chat = () => {
   const handleLogout = async () => {
     try {
       await logout();
+      toast.success('You have been logged out successfully.');
+      navigate('/login', { replace: true });
     } catch (err) {
+      toast.error('Logout failed. Please try again.');
       console.error('Logout error:', err);
     }
   };
@@ -30,7 +37,7 @@ const Chat = () => {
    */
   const handleProfileClick = () => {
     // TODO: Implement profile modal/drawer
-    console.log('Profile clicked');
+    toast.info('Profile settings coming soon!');
   };
 
   /**
@@ -38,7 +45,7 @@ const Chat = () => {
    */
   const handleThemeToggle = () => {
     // TODO: Implement theme toggle in PR #15
-    console.log('Theme toggle clicked');
+    toast.info('Theme toggle coming in a future update!');
   };
 
   // Sidebar placeholder
