@@ -8,6 +8,7 @@ import healthRoutes from './health.routes.js';
 import authRoutes from './auth.routes.js';
 import userRoutes from './user.routes.js';
 import chatRoutes from './chat.routes.js';
+import messageRoutes from './message.routes.js';
 
 const router = express.Router();
 
@@ -27,7 +28,7 @@ router.use('/users', userRoutes);
 // Chat routes
 router.use('/chats', chatRoutes);
 
-// Future routes will be added here:
-// router.use('/messages', messageRoutes);
+// Message routes
+router.use('/messages', messageRoutes);
 
 export default router;
