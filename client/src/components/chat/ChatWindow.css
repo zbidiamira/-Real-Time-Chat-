@@ -259,3 +259,34 @@
   width: 20px;
   height: 20px;
 }
+
+/* Online badge in header */
+.online-badge {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 10px;
+  height: 10px;
+  background: var(--color-online);
+  border-radius: 50%;
+  border: 2px solid var(--color-surface);
+}
+
+.chat-header-avatar {
+  position: relative;
+}
+
+.chat-header-status.status-online {
+  color: var(--color-online);
+}
+
+/* Disabled header buttons */
+.header-action-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.header-action-btn:disabled:hover {
+  background: transparent;
+  color: var(--color-text-secondary);
+}
