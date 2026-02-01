@@ -11,6 +11,7 @@ import { messageService } from '../../services/message.service';
 import MessageList from './MessageList';
 import MessageInput from './MessageInput';
 import TypingIndicator from './TypingIndicator';
+import GroupInfoDrawer from './GroupInfoDrawer';
 import './ChatWindow.css';
 
 /**
@@ -27,8 +28,10 @@ const ChatWindow = () => {
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
   const [typingUsers, setTypingUsers] = useState([]);
+  const [showGroupInfo, setShowGroupInfo] = useState(false);
   
   const currentChatRef = useRef(null);
+  const selectedChatId = selectedChat?._id;
 
   /**
    * Fetch messages for selected chat
@@ -61,49 +64,50 @@ const ChatWindow = () => {
    * Load more messages (pagination)
    */
   const handleLoadMore = useCallback(() => {
-    if (selectedChat && hasMore && !loading) {
-      fetchMessages(selectedChat._id, page + 1, true);
+    if (selectedChatId && hasMore && !loading) {
+      fetchMessages(selectedChatId, page + 1, true);
     }
-  }, [selectedChat, hasMore, loading, page, fetchMessages]);
+  }, [selectedChatId, hasMore, loading, page, fetchMessages]);
 
   /**
    * Handle chat selection changes
    */
   useEffect(() => {
-    if (!selectedChat) {
+    if (!selectedChatId) {
       setMessages([]);
       setTypingUsers([]);
       return;
     }
 
     // Leave previous chat room
-    if (currentChatRef.current && currentChatRef.current !== selectedChat._id) {
+    if (currentChatRef.current && currentChatRef.current !== selectedChatId) {
       leaveChat(currentChatRef.current);
     }
 
     // Join new chat room
-    currentChatRef.current = selectedChat._id;
-    joinChat(selectedChat._id);
+    currentChatRef.current = selectedChatId;
+    joinChat(selectedChatId);
     
     // Reset and fetch messages
     setMessages([]);
     setPage(1);
     setHasMore(true);
     setTypingUsers([]);
-    fetchMessages(selectedChat._id, 1);
-  }, [selectedChat?._id, joinChat, leaveChat, fetchMessages]);
+    fetchMessages(selectedChatId, 1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedChatId]);
 
   /**
    * Handle socket events for messages
    */
   useEffect(() => {
-    if (!selectedChat) return;
+    if (!selectedChatId) return;
 
     // New message received
     const handleNewMessage = (message) => {
       // Only add if message is for current chat
       const chatId = message.chat?._id || message.chat;
-      if (chatId === selectedChat._id) {
+      if (chatId === selectedChatId) {
         setMessages((prev) => [...prev, message]);
       }
       // Update latest message in chat list
@@ -112,7 +116,7 @@ const ChatWindow = () => {
 
     // Typing events
     const handleTyping = ({ chatId, userId, userName }) => {
-      if (chatId === selectedChat._id) {
+      if (chatId === selectedChatId) {
         setTypingUsers((prev) => {
           if (!prev.includes(userName)) {
             return [...prev, userName];
@@ -123,7 +127,7 @@ const ChatWindow = () => {
     };
 
     const handleStopTyping = ({ chatId, userId }) => {
-      if (chatId === selectedChat._id) {
+      if (chatId === selectedChatId) {
         setTypingUsers((prev) => prev.filter((name) => name !== userId));
       }
     };
@@ -139,7 +143,8 @@ const ChatWindow = () => {
       off('typing', handleTyping);
       off('stop_typing', handleStopTyping);
     };
-  }, [selectedChat?._id, on, off, updateChatLatestMessage]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedChatId]);
 
   /**
    * Send a message
@@ -245,11 +250,15 @@ const ChatWindow = () => {
               <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
             </svg>
           </button>
-          <button className="header-action-btn" title="More options">
+          <button 
+            className="header-action-btn" 
+            title={selectedChat.isGroupChat ? 'Group info' : 'Chat info'}
+            onClick={() => setShowGroupInfo(true)}
+          >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="12" cy="12" r="1" />
-              <circle cx="12" cy="5" r="1" />
-              <circle cx="12" cy="19" r="1" />
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 16v-4" />
+              <path d="M12 8h.01" />
             </svg>
           </button>
         </div>
@@ -272,6 +281,14 @@ const ChatWindow = () => {
         onTyping={handleTyping}
         disabled={sending}
       />
+
+      {/* Group/Chat Info Drawer */}
+      {showGroupInfo && (
+        <GroupInfoDrawer
+          chat={selectedChat}
+          onClose={() => setShowGroupInfo(false)}
+        />
+      )}
     </div>
   );
 };
