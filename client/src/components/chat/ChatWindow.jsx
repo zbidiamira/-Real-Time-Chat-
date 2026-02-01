@@ -7,6 +7,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useChat } from '../../hooks/useChat';
 import { useSocket } from '../../hooks/useSocket';
 import { useToast } from '../../hooks/useToast';
+import { useNotification } from '../../hooks/useNotification';
 import { messageService } from '../../services/message.service';
 import MessageList from './MessageList';
 import MessageInput from './MessageInput';
@@ -21,6 +22,7 @@ const ChatWindow = () => {
   const { selectedChat, getChatName, getChatAvatar, updateChatLatestMessage, getChatPartner } = useChat();
   const { joinChat, leaveChat, sendMessage: emitMessage, emitTyping, emitStopTyping, on, off, isUserOnline } = useSocket();
   const { showToast } = useToast();
+  const { notifyNewMessage, clearUnread } = useNotification();
   
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -88,6 +90,9 @@ const ChatWindow = () => {
     currentChatRef.current = selectedChatId;
     joinChat(selectedChatId);
     
+    // Clear unread count for this chat
+    clearUnread(selectedChatId);
+    
     // Reset and fetch messages
     setMessages([]);
     setPage(1);
@@ -107,11 +112,17 @@ const ChatWindow = () => {
     const handleNewMessage = (message) => {
       // Only add if message is for current chat
       const chatId = message.chat?._id || message.chat;
-      if (chatId === selectedChatId) {
+      const isActiveChat = chatId === selectedChatId;
+      
+      if (isActiveChat) {
         setMessages((prev) => [...prev, message]);
       }
+      
       // Update latest message in chat list
       updateChatLatestMessage(message);
+      
+      // Notify for new message (handles unread count, sound, browser notification)
+      notifyNewMessage(message, chatId, isActiveChat);
     };
 
     // Typing events

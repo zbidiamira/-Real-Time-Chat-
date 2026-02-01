@@ -8,6 +8,7 @@ import { AuthProvider } from './context/AuthContext';
 import { ChatProvider } from './context/ChatContext';
 import { ToastProvider } from './context/ToastContext';
 import { SocketProvider } from './context/SocketContext';
+import { NotificationProvider } from './context/NotificationContext';
 import { ProtectedRoute } from './components/common';
 import { Login, Register, Chat, NotFound } from './pages';
 
@@ -21,8 +22,9 @@ function App() {
     <ToastProvider>
       <AuthProvider>
         <ChatProvider>
-          <SocketProvider>
-            <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+          <NotificationProvider>
+            <SocketProvider>
+              <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
               <Routes>
                 {/* Public Routes */}
                 <Route path="/login" element={<Login />} />
@@ -41,9 +43,10 @@ function App() {
                 {/* 404 Not Found */}
                 <Route path="/404" element={<NotFound />} />
                 <Route path="*" element={<Navigate to="/404" replace />} />
-              </Routes>
-            </BrowserRouter>
-          </SocketProvider>
+                </Routes>
+              </BrowserRouter>
+            </SocketProvider>
+          </NotificationProvider>
         </ChatProvider>
       </AuthProvider>
     </ToastProvider>

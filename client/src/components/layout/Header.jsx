@@ -4,7 +4,8 @@
  */
 
 import { useState, useRef, useEffect } from 'react';
-import { Avatar } from '../common';
+import { Avatar, NotificationBadge } from '../common';
+import { useNotification } from '../../hooks/useNotification';
 import './Header.css';
 
 /**
@@ -25,6 +26,7 @@ const Header = ({
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
+  const { getTotalUnread, soundEnabled, toggleSound, requestNotificationPermission, browserNotificationsEnabled } = useNotification();
 
   // Close menu on outside click
   useEffect(() => {
@@ -55,7 +57,16 @@ const Header = ({
   return (
     <header className="app-header">
       <div className="header-left">
-        <h1 className="header-title">Chats</h1>
+        <div className="header-title-wrapper">
+          <h1 className="header-title">Chats</h1>
+          {getTotalUnread() > 0 && (
+            <NotificationBadge 
+              count={getTotalUnread()} 
+              size="small" 
+              position="inline" 
+            />
+          )}
+        </div>
       </div>
 
       <div className="header-right">
@@ -118,6 +129,24 @@ const Header = ({
                 <span className="menu-icon">{theme === 'light' ? '🌙' : '☀️'}</span>
                 <span>{theme === 'light' ? 'Dark Mode' : 'Light Mode'}</span>
               </button>
+
+              <button 
+                className="menu-item"
+                onClick={toggleSound}
+              >
+                <span className="menu-icon">{soundEnabled ? '🔔' : '🔕'}</span>
+                <span>{soundEnabled ? 'Mute Sounds' : 'Enable Sounds'}</span>
+              </button>
+
+              {!browserNotificationsEnabled && (
+                <button 
+                  className="menu-item"
+                  onClick={requestNotificationPermission}
+                >
+                  <span className="menu-icon">📬</span>
+                  <span>Enable Notifications</span>
+                </button>
+              )}
               
               <div className="menu-divider" />
               

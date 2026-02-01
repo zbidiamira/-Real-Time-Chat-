@@ -1,0 +1,92 @@
+/**
+ * NotificationBadge Styles
+ */
+
+.notification-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--font-semibold);
+  color: white;
+  background: var(--color-danger, #ef4444);
+  border-radius: 9999px;
+  min-width: fit-content;
+  animation: badge-pop 0.2s ease-out;
+}
+
+@keyframes badge-pop {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Size Variants */
+.badge-small {
+  font-size: 10px;
+  padding: 0 4px;
+  min-width: 16px;
+  height: 16px;
+}
+
+.badge-medium {
+  font-size: 11px;
+  padding: 0 6px;
+  min-width: 20px;
+  height: 20px;
+}
+
+.badge-large {
+  font-size: 13px;
+  padding: 0 8px;
+  min-width: 24px;
+  height: 24px;
+}
+
+/* Position Variants */
+.badge-top-right {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+}
+
+.badge-top-left {
+  position: absolute;
+  top: -4px;
+  left: -4px;
+}
+
+.badge-inline {
+  position: relative;
+  top: auto;
+  right: auto;
+  left: auto;
+  margin-left: var(--spacing-xs);
+}
+
+/* Dot variant (no number) */
+.notification-dot {
+  width: 10px;
+  height: 10px;
+  min-width: 10px;
+  padding: 0;
+  background: var(--color-danger, #ef4444);
+  border-radius: 50%;
+}
+
+.notification-dot.dot-small {
+  width: 8px;
+  height: 8px;
+  min-width: 8px;
+}
+
+.notification-dot.dot-large {
+  width: 12px;
+  height: 12px;
+  min-width: 12px;
+}

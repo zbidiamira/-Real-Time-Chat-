@@ -8,3 +8,4 @@ export { default as Avatar } from './Avatar';
 export { default as Loading } from './Loading';
 export { default as Modal } from './Modal';
 export { default as ProtectedRoute } from './ProtectedRoute';
+export { default as NotificationBadge } from './NotificationBadge';

@@ -4,7 +4,9 @@
  */
 
 import { useChat } from '../../hooks/useChat';
+import { useNotification } from '../../hooks/useNotification';
 import { formatRelativeTime } from '../../utils/dateUtils';
+import { NotificationBadge } from '../common';
 import './ChatItem.css';
 
 /**
@@ -16,11 +18,13 @@ import './ChatItem.css';
  */
 const ChatItem = ({ chat, isSelected, onClick }) => {
   const { getChatName, getChatAvatar, getChatPartner } = useChat();
+  const { getUnreadCount } = useNotification();
 
   const chatName = getChatName(chat);
   const chatAvatar = getChatAvatar(chat);
   const partner = getChatPartner(chat);
   const isOnline = !chat.isGroupChat && partner?.isOnline;
+  const unreadCount = getUnreadCount(chat._id);
 
   // Get latest message preview
   const getMessagePreview = () => {
@@ -43,7 +47,7 @@ const ChatItem = ({ chat, isSelected, onClick }) => {
 
   return (
     <div 
-      className={`chat-item ${isSelected ? 'chat-item-selected' : ''}`}
+      className={`chat-item ${isSelected ? 'chat-item-selected' : ''} ${unreadCount > 0 ? 'chat-item-unread' : ''}`}
       onClick={onClick}
       role="button"
       tabIndex={0}
@@ -70,9 +74,18 @@ const ChatItem = ({ chat, isSelected, onClick }) => {
       <div className="chat-item-content">
         <div className="chat-item-header">
           <h4 className="chat-item-name">{chatName}</h4>
-          <span className="chat-item-time">{getTimestamp()}</span>
+          <span className={`chat-item-time ${unreadCount > 0 ? 'time-unread' : ''}`}>
+            {getTimestamp()}
+          </span>
         </div>
-        <p className="chat-item-preview">{getMessagePreview()}</p>
+        <div className="chat-item-footer">
+          <p className={`chat-item-preview ${unreadCount > 0 ? 'preview-unread' : ''}`}>
+            {getMessagePreview()}
+          </p>
+          {unreadCount > 0 && (
+            <NotificationBadge count={unreadCount} size="small" position="inline" />
+          )}
+        </div>
       </div>
     </div>
   );

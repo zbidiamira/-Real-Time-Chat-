@@ -16,6 +16,12 @@
   gap: var(--spacing-md);
 }
 
+.header-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
 .header-title {
   font-size: 1.25rem;
   font-weight: 600;
