@@ -1,15 +1,17 @@
 /**
  * @fileoverview Server entry point
- * @description Initializes HTTP server, connects to database, and starts the application
+ * @description Initializes HTTP server, connects to database, Socket.io, and starts the application
  */
 
 import dotenv from 'dotenv';
+import http from 'http';
 
 // Load environment variables first
 dotenv.config();
 
 import app from './src/app.js';
 import { connectDatabase } from './src/config/database.js';
+import initializeSocket from './src/socket/index.js';
 
 const PORT = process.env.PORT || 5000;
 
@@ -21,8 +23,17 @@ const startServer = async () => {
     // Connect to MongoDB
     await connectDatabase();
 
+    // Create HTTP server
+    const server = http.createServer(app);
+
+    // Initialize Socket.io
+    const io = initializeSocket(server);
+
+    // Make io accessible to routes if needed
+    app.set('io', io);
+
     // Start the HTTP server
-    const server = app.listen(PORT, () => {
+    server.listen(PORT, () => {
       console.log(`🚀 Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
     });
 
