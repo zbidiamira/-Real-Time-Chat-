@@ -24,40 +24,40 @@
 
 /* Variants */
 .btn-primary {
-  background: var(--primary);
-  color: white;
+  background: var(--color-primary);
+  color: var(--color-white);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: var(--primary-dark);
+  background: var(--color-primary-dark);
 }
 
 .btn-secondary {
-  background: var(--bg-secondary);
-  color: var(--text-primary);
-  border: 1px solid var(--border-color);
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: var(--bg-tertiary);
+  background: var(--color-hover);
 }
 
 .btn-danger {
-  background: var(--danger);
-  color: white;
+  background: var(--color-danger);
+  color: var(--color-white);
 }
 
 .btn-danger:hover:not(:disabled) {
-  background: #c0392b;
+  background: #dc2626;
 }
 
 .btn-ghost {
   background: transparent;
-  color: var(--text-primary);
+  color: var(--color-text);
 }
 
 .btn-ghost:hover:not(:disabled) {
-  background: var(--bg-secondary);
+  background: var(--color-hover);
 }
 
 /* Sizes */

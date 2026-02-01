@@ -107,4 +107,5 @@ export const useToast = () => {
   return context;
 };
 
+export { ToastContext };
 export default ToastContext;

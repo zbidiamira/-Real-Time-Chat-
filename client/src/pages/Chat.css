@@ -1,109 +1,16 @@
 /* Chat Page Styles */
 
-.chat-main {
-  flex: 1;
+.chat-page {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
   background: var(--color-background);
-  padding: var(--spacing-lg);
-}
-
-.chat-welcome {
-  text-align: center;
-  max-width: 400px;
-}
-
-.welcome-icon {
-  font-size: 4rem;
-  margin-bottom: var(--spacing-lg);
-  animation: bounce 2s ease-in-out infinite;
-}
-
-@keyframes bounce {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-.welcome-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--color-text);
-  margin: 0 0 var(--spacing-sm) 0;
-}
-
-.welcome-subtitle {
-  font-size: 0.95rem;
-  color: var(--color-text-secondary);
-  margin: 0 0 var(--spacing-xl) 0;
-  line-height: 1.5;
-}
-
-.welcome-features {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
-  margin-top: var(--spacing-xl);
-  padding: var(--spacing-lg);
-  background: var(--color-surface);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--color-border);
-}
-
-.feature-item {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
-  font-size: 0.9rem;
-  color: var(--color-text);
-}
-
-.feature-icon {
-  font-size: 1.25rem;
-}
-
-/* Sidebar Placeholder */
-.sidebar-placeholder {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-.chat-list-placeholder {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: var(--spacing-lg);
-  text-align: center;
-  color: var(--color-text-secondary);
-}
-
-.chat-list-placeholder p {
-  margin: 0 0 var(--spacing-xs) 0;
-}
-
-.placeholder-hint {
-  font-size: 0.8rem;
-  color: var(--color-text-muted);
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-  .welcome-icon {
-    font-size: 3rem;
-  }
-
-  .welcome-title {
-    font-size: 1.25rem;
-  }
-
-  .welcome-features {
-    padding: var(--spacing-md);
+  .chat-page {
+    position: relative;
   }
 }
