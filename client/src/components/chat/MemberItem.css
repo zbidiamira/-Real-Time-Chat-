@@ -1,0 +1,126 @@
+/**
+ * MemberItem Styles
+ */
+
+.member-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  transition: background 0.2s ease;
+}
+
+.member-item:hover {
+  background: var(--color-hover);
+}
+
+.member-item.is-you {
+  background: var(--color-primary-bg);
+}
+
+/* Avatar */
+.member-avatar {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+.member-avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.online-dot {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 10px;
+  height: 10px;
+  background: var(--color-online);
+  border: 2px solid var(--color-surface);
+  border-radius: 50%;
+}
+
+/* Info */
+.member-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.member-name {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: var(--font-base);
+  font-weight: var(--font-medium);
+  color: var(--color-text);
+}
+
+.you-badge {
+  font-size: var(--font-xs);
+  font-weight: var(--font-normal);
+  color: var(--color-text-secondary);
+}
+
+.admin-badge {
+  font-size: var(--font-xs);
+  font-weight: var(--font-medium);
+  color: var(--color-primary);
+  background: var(--color-primary-bg);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+
+.member-email {
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Actions */
+.member-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.member-action-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  opacity: 0;
+}
+
+.member-item:hover .member-action-btn {
+  opacity: 1;
+}
+
+.member-action-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.remove-btn {
+  color: var(--color-error);
+}
+
+.remove-btn:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.member-action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

@@ -8,9 +8,24 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// Import routes
+import routes from './routes/index.js';
+
+// Import middleware
+import errorHandler from './middleware/errorHandler.js';
+
+// Import utilities
+import AppError from './utils/AppError.js';
+import { sendSuccess } from './utils/responseHandler.js';
 
 // Load environment variables
 dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
@@ -19,7 +34,9 @@ const app = express();
 // ======================
 
 // Set security HTTP headers
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: 'cross-origin' }
+}));
 
 // Enable CORS with credentials
 app.use(cors({
@@ -49,25 +66,11 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 // ======================
-// Health Check Route
+// Static Files
 // ======================
 
-/**
- * @route GET /api/health
- * @description Health check endpoint to verify server status
- * @access Public
- */
-app.get('/api/health', (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: 'Server is healthy',
-    data: {
-      uptime: process.uptime(),
-      timestamp: new Date().toISOString(),
-      environment: process.env.NODE_ENV || 'development'
-    }
-  });
-});
+// Serve uploaded files
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // ======================
 // Root Route
@@ -79,13 +82,17 @@ app.get('/api/health', (req, res) => {
  * @access Public
  */
 app.get('/', (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: 'Welcome to Chat App API',
+  sendSuccess(res, 200, 'Welcome to Chat App API', {
     version: '1.0.0',
     documentation: '/api/health'
   });
 });
+
+// ======================
+// API Routes
+// ======================
+
+app.use('/api', routes);
 
 // ======================
 // 404 Handler
@@ -94,37 +101,14 @@ app.get('/', (req, res) => {
 /**
  * Handle undefined routes
  */
-app.use('*', (req, res) => {
-  res.status(404).json({
-    success: false,
-    message: `Cannot ${req.method} ${req.originalUrl}`,
-    error: 'Route not found'
-  });
+app.all('*', (req, res, next) => {
+  next(new AppError(`Cannot ${req.method} ${req.originalUrl}`, 404));
 });
 
 // ======================
 // Global Error Handler
 // ======================
 
-/**
- * Global error handling middleware
- * @param {Error} err - Error object
- * @param {Request} req - Express request object
- * @param {Response} res - Express response object
- * @param {NextFunction} next - Express next function
- */
-// eslint-disable-next-line no-unused-vars
-app.use((err, req, res, next) => {
-  console.error('Error:', err);
-
-  const statusCode = err.statusCode || 500;
-  const message = err.message || 'Internal Server Error';
-
-  res.status(statusCode).json({
-    success: false,
-    message,
-    error: process.env.NODE_ENV === 'development' ? err.stack : undefined
-  });
-});
+app.use(errorHandler);
 
 export default app;

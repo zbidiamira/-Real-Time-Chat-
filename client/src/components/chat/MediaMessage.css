@@ -1,0 +1,260 @@
+/**
+ * MediaMessage Component Styles
+ */
+
+.media-message {
+  margin-top: 4px;
+}
+
+/* Images Grid */
+.media-images {
+  display: grid;
+  gap: 4px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.media-images.single {
+  grid-template-columns: 1fr;
+  max-width: 280px;
+}
+
+.media-images.double {
+  grid-template-columns: repeat(2, 1fr);
+  max-width: 280px;
+}
+
+.media-images.grid {
+  grid-template-columns: repeat(2, 1fr);
+  max-width: 280px;
+}
+
+.media-image-wrapper {
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+  aspect-ratio: 1;
+  background-color: var(--surface-color, #f5f5f5);
+}
+
+.media-images.single .media-image-wrapper {
+  aspect-ratio: auto;
+  max-height: 300px;
+}
+
+.media-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.2s ease;
+}
+
+.media-images.single .media-image {
+  object-fit: contain;
+  background-color: var(--surface-color, #f5f5f5);
+}
+
+.media-image-wrapper:hover .media-image {
+  transform: scale(1.05);
+}
+
+.media-image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.media-image-wrapper:hover .media-image-overlay {
+  opacity: 1;
+}
+
+.media-image-overlay svg {
+  width: 32px;
+  height: 32px;
+  color: white;
+}
+
+/* Files List */
+.media-files {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.media-file {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  min-width: 200px;
+  max-width: 280px;
+}
+
+.sent .media-file {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.media-file:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.sent .media-file:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
+.media-file-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.media-file-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* Icon colors by type */
+.media-file-icon.pdf {
+  background-color: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+.media-file-icon.word {
+  background-color: rgba(59, 130, 246, 0.15);
+  color: #3b82f6;
+}
+
+.media-file-icon.excel {
+  background-color: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+}
+
+.media-file-icon.archive {
+  background-color: rgba(249, 115, 22, 0.15);
+  color: #f97316;
+}
+
+.media-file-icon.text {
+  background-color: rgba(107, 114, 128, 0.15);
+  color: #6b7280;
+}
+
+.media-file-icon.file {
+  background-color: rgba(107, 114, 128, 0.15);
+  color: #6b7280;
+}
+
+.sent .media-file-icon {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.media-file-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.media-file-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-color, #333);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sent .media-file-name {
+  color: white;
+}
+
+.media-file-size {
+  font-size: 11px;
+  color: var(--text-secondary, #666);
+}
+
+.sent .media-file-size {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.media-file-download {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  color: var(--text-secondary, #666);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.media-file-download:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+  color: var(--text-color, #333);
+}
+
+.sent .media-file-download {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.sent .media-file-download:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.media-file-download svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+  .media-images.single,
+  .media-images.double,
+  .media-images.grid {
+    max-width: 220px;
+  }
+
+  .media-file {
+    min-width: 180px;
+    max-width: 220px;
+    padding: 8px;
+  }
+
+  .media-file-icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .media-file-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .media-file-name {
+    font-size: 12px;
+  }
+}

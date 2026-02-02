@@ -1,70 +1,77 @@
 /**
  * @fileoverview Main Application Component
- * @description Root component that sets up routing and global providers
+ * @description Root component that sets up routing, authentication, and global providers
  */
 
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import { ChatProvider } from './context/ChatContext';
+import { ToastProvider } from './context/ToastContext';
+import { SocketProvider } from './context/SocketContext';
+import { NotificationProvider } from './context/NotificationContext';
+import { ThemeProvider } from './context/ThemeContext';
+import { ProtectedRoute, ErrorBoundary, ErrorFallback } from './components/common';
+import { Login, Register, Chat, NotFound } from './pages';
+
+/**
+ * Log error to external service (placeholder for production)
+ * @param {Error} error - The error that was caught
+ * @param {Object} errorInfo - Additional error information
+ */
+const logErrorToService = (error, errorInfo) => {
+  // In production, send to error tracking service like Sentry
+  if (import.meta.env.PROD) {
+    console.error('Production error:', error);
+    // TODO: Send to error tracking service
+    // Sentry.captureException(error, { extra: errorInfo });
+  }
+};
 
 /**
  * Main App component
+ * Sets up authentication provider, chat context, socket context, toast notifications, and routing
  * @returns {JSX.Element} The main application component
  */
 function App() {
   return (
-    <Router>
-      <div className="app">
-        <Routes>
-          {/* Home Route */}
-          <Route 
-            path="/" 
-            element={
-              <div className="welcome-container">
-                <h1>💬 Chat App</h1>
-                <p>Real-time messaging application</p>
-                <div className="status-badge">
-                  <span className="status-dot"></span>
-                  Server Connected
-                </div>
-              </div>
-            } 
-          />
+    <ErrorBoundary 
+      FallbackComponent={ErrorFallback}
+      onError={logErrorToService}
+    >
+      <ThemeProvider>
+        <ToastProvider>
+          <AuthProvider>
+          <ChatProvider>
+            <NotificationProvider>
+              <SocketProvider>
+                <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+                <Routes>
+                  {/* Public Routes */}
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
 
-          {/* Login Route - Placeholder */}
-          <Route 
-            path="/login" 
-            element={
-              <div className="auth-container">
-                <h2>Login</h2>
-                <p>Login page coming in PR #8</p>
-              </div>
-            } 
-          />
+                  {/* Protected Routes */}
+                  <Route
+                    path="/"
+                    element={
+                      <ProtectedRoute>
+                        <Chat />
+                      </ProtectedRoute>
+                    }
+                  />
 
-          {/* Register Route - Placeholder */}
-          <Route 
-            path="/register" 
-            element={
-              <div className="auth-container">
-                <h2>Register</h2>
-                <p>Register page coming in PR #8</p>
-              </div>
-            } 
-          />
-
-          {/* 404 Not Found */}
-          <Route 
-            path="*" 
-            element={
-              <div className="not-found-container">
-                <h1>404</h1>
-                <p>Page not found</p>
-                <a href="/">Go back home</a>
-              </div>
-            } 
-          />
-        </Routes>
-      </div>
-    </Router>
+                  {/* 404 Not Found */}
+                  <Route path="/404" element={<NotFound />} />
+                  <Route path="*" element={<Navigate to="/404" replace />} />
+                  </Routes>
+                </BrowserRouter>
+              </SocketProvider>
+            </NotificationProvider>
+          </ChatProvider>
+        </AuthProvider>
+      </ToastProvider>
+      </ThemeProvider>
+    </ErrorBoundary>
   );
 }
 
