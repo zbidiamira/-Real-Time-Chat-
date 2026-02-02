@@ -203,20 +203,48 @@ export const ChatProvider = ({ children }) => {
   }, [selectedChat, user]);
 
   /**
+   * Add a new chat to the list (for when receiving message from new chat)
+   * @param {Object} chat - New chat object
+   */
+  const addNewChat = useCallback((chat) => {
+    setChats((prev) => {
+      // Check if chat already exists
+      const exists = prev.some((c) => c._id === chat._id);
+      if (exists) return prev;
+      // Add new chat at the beginning
+      return [chat, ...prev];
+    });
+  }, []);
+
+  /**
    * Update chat with latest message
    * @param {Object} message - New message
+   * @param {boolean} shouldRefetch - Whether to refetch chats if chat not found
    */
-  const updateChatLatestMessage = useCallback((message) => {
+  const updateChatLatestMessage = useCallback((message, shouldRefetch = true) => {
+    const chatId = message.chat?._id || message.chat;
+    
     setChats((prev) => {
-      const chatIndex = prev.findIndex((c) => c._id === message.chat._id || c._id === message.chat);
-      if (chatIndex === -1) return prev;
+      const chatIndex = prev.findIndex((c) => c._id === chatId);
+      
+      if (chatIndex === -1) {
+        // Chat not found in list - this is a new chat
+        // We'll refetch chats to get the new one
+        if (shouldRefetch) {
+          // Use setTimeout to avoid state update during render
+          setTimeout(() => {
+            fetchChats();
+          }, 100);
+        }
+        return prev;
+      }
 
       const updatedChats = [...prev];
       const [chat] = updatedChats.splice(chatIndex, 1);
       chat.latestMessage = message;
       return [chat, ...updatedChats];
     });
-  }, []);
+  }, [fetchChats]);
 
   /**
    * Get the other user in a private chat
@@ -246,10 +274,10 @@ export const ChatProvider = ({ children }) => {
    * @returns {string} Avatar URL
    */
   const getChatAvatar = useCallback((chat) => {
-    if (!chat) return 'default-avatar.png';
-    if (chat.isGroupChat) return chat.groupAvatar || 'default-group.png';
+    if (!chat) return '/default-avatar.svg';
+    if (chat.isGroupChat) return chat.groupAvatar || '/default-group.svg';
     const partner = getChatPartner(chat);
-    return partner?.avatar || 'default-avatar.png';
+    return partner?.avatar || '/default-avatar.svg';
   }, [getChatPartner]);
 
   const value = {
@@ -265,6 +293,7 @@ export const ChatProvider = ({ children }) => {
     addToGroup,
     removeFromGroup,
     updateChatLatestMessage,
+    addNewChat,
     getChatPartner,
     getChatName,
     getChatAvatar

@@ -111,6 +111,37 @@
   text-overflow: ellipsis;
 }
 
+/* Sidebar Header Actions */
+.sidebar-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.logout-btn:hover {
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+}
+
+.logout-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
 /* Sidebar Actions */
 .sidebar-actions {
   padding: var(--spacing-sm) var(--spacing-md);

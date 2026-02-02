@@ -43,8 +43,8 @@ const ProfileModal = ({ isOpen, onClose }) => {
    * Get full avatar URL
    */
   const getAvatarUrl = (avatar) => {
-    if (!avatar || avatar === 'default-avatar.png') {
-      return '/default-avatar.png';
+    if (!avatar || avatar === 'default-avatar.png' || avatar === 'default-avatar.svg') {
+      return '/default-avatar.svg';
     }
     if (avatar.startsWith('http') || avatar.startsWith('blob:')) {
       return avatar;

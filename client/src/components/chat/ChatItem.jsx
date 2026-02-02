@@ -58,7 +58,7 @@ const ChatItem = ({ chat, isSelected, onClick }) => {
           src={chatAvatar} 
           alt={chatName}
           onError={(e) => { 
-            e.target.src = chat.isGroupChat ? '/default-group.png' : '/default-avatar.png'; 
+            e.target.src = chat.isGroupChat ? '/default-group.svg' : '/default-avatar.svg'; 
           }}
         />
         {isOnline && <span className="online-dot" />}

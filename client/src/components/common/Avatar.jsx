@@ -12,8 +12,8 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
  * Get full avatar URL
  */
 const getAvatarUrl = (src) => {
-  if (!src || src === 'default-avatar.png') {
-    return null; // Will use initials
+  if (!src || src === 'default-avatar.png' || src === 'default-avatar.svg') {
+    return '/default-avatar.svg';
   }
   if (src.startsWith('http') || src.startsWith('blob:') || src.startsWith('/default')) {
     return src;
@@ -71,29 +71,20 @@ const Avatar = ({
   };
 
   const avatarUrl = getAvatarUrl(src);
-  const showInitials = !avatarUrl;
 
   return (
     <div className={`avatar avatar-${size} ${className}`}>
-      {showInitials ? (
-        <div 
-          className="avatar-initials"
-          style={{ backgroundColor: getColorFromName(name) }}
-        >
-          {getInitials(name)}
-        </div>
-      ) : (
-        <img 
-          src={avatarUrl} 
-          alt={alt} 
-          className="avatar-image"
-          onError={(e) => {
-            // On error, replace with initials by hiding the image
-            e.target.style.display = 'none';
-            e.target.parentNode.classList.add('avatar-fallback');
-          }}
-        />
-      )}
+      <img 
+        src={avatarUrl} 
+        alt={alt} 
+        className="avatar-image"
+        onError={(e) => {
+          // On error, use default avatar
+          if (!e.target.src.includes('default-avatar.svg')) {
+            e.target.src = '/default-avatar.svg';
+          }
+        }}
+      />
       {typeof online === 'boolean' && (
         <span className={`avatar-status ${online ? 'online' : 'offline'}`} />
       )}

@@ -20,8 +20,8 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
  * Get full avatar URL
  */
 const getAvatarUrl = (avatar) => {
-  if (!avatar || avatar === 'default-avatar.png') {
-    return '/default-avatar.png';
+  if (!avatar || avatar === 'default-avatar.png' || avatar === 'default-avatar.svg') {
+    return '/default-avatar.svg';
   }
   if (avatar.startsWith('http') || avatar.startsWith('/default')) {
     return avatar;
@@ -33,8 +33,9 @@ const getAvatarUrl = (avatar) => {
  * ChatSidebar component displays chat list with search and create options
  * @param {Object} props - Component props
  * @param {Function} props.onChatSelect - Callback when a chat is selected (for mobile drawer close)
+ * @param {Function} props.onLogout - Callback for logging out
  */
-const ChatSidebar = ({ onChatSelect }) => {
+const ChatSidebar = ({ onChatSelect, onLogout }) => {
   const { user } = useAuth();
   const { loading } = useChat();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -56,7 +57,7 @@ const ChatSidebar = ({ onChatSelect }) => {
               <img 
                 src={getAvatarUrl(user?.avatar)} 
                 alt={user?.name} 
-                onError={(e) => { e.target.src = '/default-avatar.png'; }}
+                onError={(e) => { e.target.src = '/default-avatar.svg'; }}
               />
               <span className="online-indicator" />
             </div>
@@ -72,7 +73,21 @@ const ChatSidebar = ({ onChatSelect }) => {
             <span className="user-status">{user?.status || 'Online'}</span>
           </div>
         </div>
-        <ThemeToggle />
+        <div className="sidebar-header-actions">
+          <ThemeToggle />
+          <button 
+            className="logout-btn"
+            onClick={onLogout}
+            title="Logout"
+            aria-label="Logout"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+          </button>
+        </div>
       </div>
 
       {/* Search and Actions */}

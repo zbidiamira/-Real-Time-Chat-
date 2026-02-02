@@ -282,7 +282,7 @@ const ChatWindow = ({ onMenuClick, isMobile }) => {
               src={chatAvatar} 
               alt={chatName}
               onError={(e) => { 
-                e.target.src = selectedChat.isGroupChat ? '/default-group.png' : '/default-avatar.png'; 
+                e.target.src = selectedChat.isGroupChat ? '/default-group.svg' : '/default-avatar.svg'; 
               }}
             />
             {isOnline && <span className="online-badge" />}
